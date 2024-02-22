@@ -179,6 +179,9 @@ export async function fetchInvoiceById(id: string) {
       // Convert amount from cents to dollars
       amount: invoice.amount / 100,
     }));
+    
+    // Add this line for DEV purposes per chapter 13
+    // console.log('DEV ONLY ~ invoice', invoice ); 
 
     return invoice[0];
   } catch (error) {

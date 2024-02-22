@@ -1,5 +1,7 @@
 import Form from '@/app/ui/invoices/edit-form';
 import Breadcrumbs from '@/app/ui/invoices/breadcrumbs';
+import { notFound } from 'next/navigation'; // import this line per chapter 13
+
 import {
   fetchCustomers,
   fetchInvoiceById ,
@@ -13,6 +15,10 @@ export default async function Page( {
 
   const id = params.id;
   const [ invoice, customers ] = await Promise.all( [fetchInvoiceById(id), fetchCustomers() ] );
+
+  if(!invoice){
+    notFound();
+  }
 
   return (
     <main>
