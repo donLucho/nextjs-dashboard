@@ -5,13 +5,24 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+
 const FormSchema = z.object( {
   id: z.string(),
-  customerId: z.string(),
-  amount: z.coerce.number(),
-  status: z.enum(['pending', 'paid']),
+  
+  // customerId: z.string(), // Old value per chapter 14
+  customerId: z.string( {
+    invalid_type_error: 'Please select a customer.'
+  } ), // NEW value per chapter 14
+  
+  // amount: z.coerce.number(), // Old value per chapter 14
+  amount: z.coerce.number().gt(0, { message: 'Enter an amount GT $0.' } ), // NEW value per chapter 14
+  
+  // status: z.enum(['pending', 'paid']), // Old value per chapter 14
+  status: z.enum(['pending', 'paid'] , {invalid_type_error: 'Select an invoice status.' } ), // NEW value per chapter 14
+
   date: z.string() ,
 } );
+
 
 const CreateInvoice = FormSchema.omit({
   id: true ,
@@ -23,7 +34,17 @@ const UpdateInvoice = FormSchema.omit({
   date: true ,
 });
 
-export async function createInvoice(formData: FormData){
+export type State = {
+  errors?: {
+    customerId?: string[];
+    amount?: string[];
+    status?: string[];
+  };
+  message?: string | null;
+}; // NEW value per chapter 14
+
+// export async function createInvoice(formData: FormData){ // Old format per chapter 14
+export async function createInvoice(prevState: State, formData: FormData){ // New format per chapter 14
 
   // v1
   // const rawFormData_v1 = { customerId: formData.get('customerId'), amount: formData.get('amount') , status: formData.get('status') , };
@@ -37,13 +58,30 @@ export async function createInvoice(formData: FormData){
   // console.log('rawFormData_v2' , rawFormData_v2, '\n' );
   // console.log('typeof rawFormData_v2.amount' , typeof rawFormData_v2.amount, '\n' );
 
-  // vtwentify-billion
-  const { customerId, amount, status } = CreateInvoice.parse( {
+  // v.twentify-billion... and three octo-eleventh... Bbbb-bbb-bbb-bbb-bb...
+  // const { customerId, amount, status } = CreateInvoice.parse( {
+  //   customerId: formData.get('customerId'), 
+  //   amount: formData.get('amount') , 
+  //   status: formData.get('status') ,
+  // } );
+
+  // To quote Sir Billy Connolly b/c I should have stopped counting a while back -- Oh, for fa-a!!!
+  const validatedFields = CreateInvoice.safeParse( { // New value per chapter 14
     customerId: formData.get('customerId'), 
     amount: formData.get('amount') , 
     status: formData.get('status') ,
   } );
 
+  // New block insertion per chapter 14
+  // If form validation fails, return errors early. Otherwise continue
+  if(!validatedFields.success){
+    return {
+      errors: validatedFields.error.flatten().fieldErrors ,
+      message: 'Missing fields - failed to create invoice'
+    };
+  }
+
+  const { customerId, amount, status } = validatedFields.data; // Necessitated var assignments per chapter 14
   const amountInCents = amount * 100;
   const date = new Date().toISOString().split('T')[0];
 
@@ -65,14 +103,32 @@ export async function createInvoice(formData: FormData){
   redirect('/dashboard/invoices');
 }
 
-export async function updateInvoice(id: string, formData: FormData ){
-  
-  const { customerId, amount, status } = UpdateInvoice.parse( {
+// export async function updateInvoice(id: string, formData: FormData ){ // Old format per chapter 14
+export async function updateInvoice(id: string, prevState: State, formData: FormData ){ // New format per chapter 14
+
+  // knock-knock... who's there? flippin' chapter 14
+  // const { customerId, amount, status } = UpdateInvoice.parse( {
+  //   customerId: formData.get('customerId'), 
+  //   amount: formData.get('amount') , 
+  //   status: formData.get('status') ,
+  // } );
+
+  const validatedFields = UpdateInvoice.safeParse( {
     customerId: formData.get('customerId'), 
     amount: formData.get('amount') , 
     status: formData.get('status') ,
   } );
 
+  // New block insertion per chapter 14
+  // If form validation fails, return errors early. Otherwise continue
+  if(!validatedFields.success){
+    return {
+      errors: validatedFields.error.flatten().fieldErrors ,
+      message: 'Missing fields - failed to update invoice'
+    };
+  }
+
+  const { customerId, amount, status } = validatedFields.data; // Necessitated var assignments per chapter 14
   const amountInCents = amount * 100;
 
   // wrap this section in try\catch clause per chapter 13
