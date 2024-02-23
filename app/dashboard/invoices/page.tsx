@@ -1,4 +1,3 @@
-// import {} from '@/app';
 import Pagination from '@/app/ui/invoices/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/invoices/table';
@@ -10,6 +9,10 @@ import {InvoicesTableSkeleton} from '@/app/ui/skeletons';
 import { fetchInvoicesPages } from '@/app/lib/data';
 
 import {Suspense} from 'react';
+
+import { Metadata } from 'next'; // import this line per chapter 16
+
+export const metadata: Metadata = { title: 'Invoices' , }; // import this line per chapter 16
 
 export default async function Page(
   { 

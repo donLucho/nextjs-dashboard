@@ -17,6 +17,9 @@ import {
   CardsSkeleton ,  // import this line per chapter 9
 } from '@/app/ui/skeletons'; 
 
+import { Metadata } from 'next'; // import this line per chapter 16
+
+export const metadata: Metadata = { title: 'Dashboard' , }; // import this line per chapter 16
 
 
 export default async function Page(){

@@ -7,6 +7,10 @@ import {
   fetchInvoiceById ,
 } from '@/app/lib/data';
 
+import { Metadata } from 'next'; // import this line per chapter 16
+
+export const metadata: Metadata = { title: 'Edit Invoice' , }; // import this line per chapter 16
+
 export default async function Page( {
   params
 } : {

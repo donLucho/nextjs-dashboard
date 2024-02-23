@@ -1,8 +1,8 @@
 import { fetchFilteredCustomers } from '@/app/lib/data';
 import CustomersTable from '@/app/ui/customers/table';
-// import { Metadata } from 'next';
+import { Metadata } from 'next'; // import this line per chapter 16
 
-// export const metadata: Metadata = { title: 'Customers' , };
+export const metadata: Metadata = { title: 'Customers' , }; // import this line per chapter 16
 
 export default async function Page(
   {
