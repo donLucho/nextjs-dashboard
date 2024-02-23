@@ -10,7 +10,7 @@ import {
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateInvoice } from '@/app/lib/actions'; // import this line per chapter 12
-import { useFormState } from 'react-dom'; // Preferred server-side validation - Add this line for per chapter 14
+import { useFormState } from 'react-dom'; // Preferred client-side validation - Add this line for per chapter 14
 
 export default function EditInvoiceForm({
   invoice,
@@ -20,11 +20,11 @@ export default function EditInvoiceForm({
   customers: CustomerField[];
 }) {
   
-  const initialState = {message: null, errors: {} }; // Preferred server-side validation - Add this line for per chapter 14
+  const initialState = {message: null, errors: {} }; // Preferred client-side validation - Add this line for per chapter 14
   
   const updateInvoiceWithId = updateInvoice.bind(null, invoice.id); // import this line per chapter 12
   
-  const [state, dispatch] = useFormState(updateInvoiceWithId, initialState ); // Preferred server-side validation - Add this line for per chapter 14
+  const [state, dispatch] = useFormState(updateInvoiceWithId, initialState ); // Preferred client-side validation - Add this line for per chapter 14
 
   return (
     <>
